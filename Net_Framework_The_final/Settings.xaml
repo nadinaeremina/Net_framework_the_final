@@ -1,0 +1,49 @@
+﻿<Window x:Class="English_for_kids.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:English_for_kids"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com" 
+        mc:Ignorable="d"
+        Title="Меню" Height="500" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid Margin="0,0,472,21">
+        <WrapPanel Margin="0,0,-471,0">
+            <WrapPanel.Resources>
+                <LinearGradientBrush x:Key="GBB" StartPoint="0,0" EndPoint="1,0" >
+                    <!--у ресурса есть ключ-->
+                    <GradientStop Color="Blue" Offset="0.0"/>
+                    <GradientStop Color="Yellow" Offset="0.5"/>
+                    <GradientStop Color="Green" Offset="1.0"/>
+                </LinearGradientBrush>
+            </WrapPanel.Resources>
+            <Menu Height="25" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <MenuItem Header="Игра">
+                    <MenuItem Name="new_player" Click="new_player_Click" Header="Новый игрок"></MenuItem>
+                    <MenuItem Name="ex_player" Click="ex_player_Click" Header="Существующий игрок"></MenuItem>
+                    <Separator/>
+                    <MenuItem Name="exit_player" Click="exit_player_Click" Header="Выход"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Другое">
+                    <MenuItem Name="rating" Click="rating_Click" Header="Рейтинг"></MenuItem>
+                    <MenuItem Name="info" Click="info_Click" Header="Твой помощник"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <StackPanel Orientation="Horizontal" Width="791">
+                <Image Width="544" Source="play.jpg" Height="449"/>
+                <StackPanel x:Name="st_panel_auto" Orientation="Vertical" VerticalAlignment="Center" Visibility="Hidden" HorizontalAlignment="Left" Width="205" >
+                    <TextBlock x:Name="new_or_exist" Background="Yellow" FontStyle="Italic" Margin="-7,0,-6,0"></TextBlock>
+                    <TextBlock Height="21" Text="Введите имя:"></TextBlock>
+                    <TextBox x:Name="txt_name" Height="39" Margin="0,0,-1,0" PreviewKeyDown="txt_name_PreviewKeyDown" PreviewTextInput="txt_name_PreviewTextInput"/>
+                    <TextBlock Height="21" Text="Введите фамилию:">></TextBlock>
+                    <TextBox x:Name="txt_lastname" Height="39" Margin="0,0,-1,0" PreviewTextInput="txt_lastname_PreviewTextInput" PreviewKeyDown="txt_lastname_PreviewKeyDown"/>
+                    <TextBlock x:Name="enter_age" Height="22"><Run Text="Введите возраст:"/></TextBlock>
+                    <TextBox x:Name="txt_age" Height="38" PreviewTextInput="txt_age_PreviewTextInput" PreviewKeyDown="txt_age_PreviewKeyDown"/>
+                    <Button Background="{DynamicResource GBB}" Foreground="Blue" Click="Button_Click" Margin="53,0,38,0" Height="48" FontStyle="Italic" BorderThickness="2" FontFamily="Swis721 Hv BT" FontSize="16" Content="Готово"/>
+                </StackPanel>
+                <StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </WrapPanel>
+    </Grid>
+</Window>

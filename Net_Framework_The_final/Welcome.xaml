@@ -1,0 +1,58 @@
+﻿<Window x:Name="welcome" x:Class="English_for_kids.Welcome"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:English_for_kids"
+        mc:Ignorable="d" Height="500" Width="800" WindowStartupLocation="CenterScreen" MinHeight="516.985" MinWidth="820.05" ResizeMode="NoResize">
+    <Grid Margin="0,0,14,3">
+        <TabControl Margin="11,5,-8,17" TabStripPlacement="Bottom">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Width="369">
+                        <TextBlock Margin="3" >Живое</TextBlock>
+                        <Image Source="animals.jpg" Stretch="Fill" Height="264" Margin="0,0,7,0">
+                            <Image.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Name="choose" Click="choose_Clickc" Header="Выбрать"></MenuItem>
+                                </ContextMenu>
+                            </Image.ContextMenu>
+                        </Image>
+                    </StackPanel>
+                </TabItem.Header>
+                <WrapPanel Margin="3">
+                    <StackPanel Width="782">
+                        <TextBlock TextAlignment="Center" Foreground="Green" FontFamily="Times New Roman" FontStyle="Italic" FontSize="20" Text="Настройте параметры:"/>
+                        <CheckBox x:Name="check_time" Margin="3" ToolTip="у вас будет лишь 60 секунд, чтобы ответить на все вопросы">Игра на время</CheckBox>
+                        <CheckBox x:Name="wrongs" Margin="3" ToolTip="у вас будет возможность сделать лишь 2 ошибки за всю игру">Ограниченное число ошибок</CheckBox>
+                        <CheckBox x:Name="onemore_try" Margin="3" ToolTip="у вас будет две попытки при ответе на каждый  вопрос" Height="18">Дополнительная попытка</CheckBox>
+                    </StackPanel>
+                    <TextBlock TextAlignment="Center" Foreground="Green" FontSize="20" FontStyle="Italic" FontFamily="Times New Roman" VerticalAlignment="Center" Width="783" Height="25">Выберите категорию:</TextBlock>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Margin="9,0,-23,-2">
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock Margin="3" >Неживое</TextBlock>
+                        <Image Source="ktl.jpg" Stretch="Fill" Height="261" Width="361">
+                            <Image.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Name="choose2" Click="choose2_Clickc" Header="Выбрать"></MenuItem>
+                                </ContextMenu>
+                            </Image.ContextMenu>
+                        </Image>
+                    </StackPanel>
+                </TabItem.Header>
+                <WrapPanel>
+                    <StackPanel Margin="3" Width="782">
+                        <TextBlock TextAlignment="Center" Foreground="Green" FontFamily="Times New Roman" FontStyle="Italic" FontSize="20" Text="Настройте параметры:"/>
+                        <CheckBox x:Name="check_time2" Margin="3" ToolTip="у вас будет лишь 60 секунд, чтобы ответить на все вопросы">Игра на время</CheckBox>
+                        <CheckBox x:Name="wrongs2" Margin="3" ToolTip="у вас будет возможность сделать лишь 2 ошибки за всю игру">Ограниченное число ошибок</CheckBox>
+                        <CheckBox x:Name="onemore_try2" Margin="3" ToolTip="у вас будет две попытки при ответе на каждый  вопрос" Height="15">Дополнительная попытка</CheckBox>
+                    </StackPanel>
+                    <TextBlock TextAlignment="Center" Foreground="Green" FontSize="20" FontStyle="Italic" FontFamily="Times New Roman" Width="790" Height="26"><Run Text="Выберите категорию:"/></TextBlock>
+                </WrapPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

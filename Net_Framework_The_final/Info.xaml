@@ -1,0 +1,23 @@
+﻿<Window x:Class="English_for_kids.Info"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:English_for_kids"
+        mc:Ignorable="d"
+        Title="Твой помощник" Height="250" Width="400" WindowStartupLocation="CenterScreen">
+    <StackPanel>
+        <TextBlock Margin="10" HorizontalAlignment="Center">Добро пожаловать!</TextBlock>
+        <TextBlock Margin="10" HorizontalAlignment="Center">Пожалуйста, выберите интересующий вас вопрос:</TextBlock>
+        <ComboBox Margin="5" x:Name="combo_questions" SelectionChanged="combo_questions_SelectionChanged" Width="297">
+            <ComboBoxItem Content="Цель игры"/>
+            <ComboBoxItem Content="Рекомендуемый возраст игрока"/>
+            <ComboBoxItem Content="Сколько всего вопросов в одной игре"/>
+            <ComboBoxItem Content="Какие есть режимы у игры"/>
+            <ComboBoxItem Content="В чем особенность каждого режиа игры"/>
+            <ComboBoxItem Content="Как включить/отключить звук у игры"/>
+        </ComboBox>
+        <TextBlock>Твой помощник:</TextBlock>
+        <StackPanel x:Name="answer_panel"></StackPanel>
+    </StackPanel>
+</Window>
