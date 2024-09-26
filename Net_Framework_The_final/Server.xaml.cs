@@ -49,45 +49,61 @@ namespace English_for_kids
                 // запускаем 'listener', который будет слушать входящие соед-ия
                 listener.Start();
 
-                // это тот клиент, который подключился - под него заводим тоже 'TcpClient'
-                // получаем его с помощью 'Accept' - вернем 'TcpClient'
-                // (также как с помощью него можно вернуть и сокет)
-                using TcpClient handler = await listener.AcceptTcpClientAsync();
-                // если бы исп-ли без 'Async' - то выносили бы в отдельный поток
+                do
+                {
+                    // это тот клиент, который подключился - под него заводим тоже 'TcpClient'
+                    // получаем его с помощью 'Accept' - вернем 'TcpClient'
+                    // (также как с помощью него можно вернуть и сокет)
+                    using TcpClient handler = await listener.AcceptTcpClientAsync();
+                    // если бы исп-ли без 'Async' - то выносили бы в отдельный поток
 
-                // ожидаем, когда предыдущий процесс завершится - поэтому 'await'
-                await using NetworkStream stream = handler.GetStream();
+                    // ожидаем, когда предыдущий процесс завершится - поэтому 'await'
+                    await using NetworkStream stream = handler.GetStream();
 
-                // далее будем считывать сообщения от сервера
-                // создаем буфер
-                var buffer = new byte[1024];
+                    // далее будем считывать сообщения от сервера
+                    // создаем буфер
+                    var buffer = new byte[1024];
 
-                // вернется размер того, что считали
-                int recLength = await stream.ReadAsync(buffer); 
+                    // вернется размер того, что считали
+                    int recLength = await stream.ReadAsync(buffer);
 
-                // расшифровываем сообщение
-                var msg = Encoding.UTF8.GetString(buffer, 0, recLength);
+                    // расшифровываем сообщение
+                    var msg = Encoding.UTF8.GetString(buffer, 0, recLength);
 
-                string answer = "";
+                    string answer = "";
 
-                if (msg == "0")
-                    answer = "Это образовательное приложение было разработано с целью изучения английского языка.";
-                else if (msg == "1")
-                    answer = "Приложение расчитано на детей от 3 до 7 лет";
-                else if (msg == "2")
-                    answer = "Приложение имеет два раздела: 'Живое' и 'Неживое', в каждом разделе по 5 вопросов.";
-                else if (msg == "3")
-                    answer = "Приложение имеет три режима: 'Игра на время', 'Ограниченное число ошибок' и 'Дополнительная попытка'";
-                else if (msg == "4")
-                    answer = "Пожалуйста, выберите интересующий Вас режим";
-                else if (msg == "5")
-                    answer = "Чтобы отключить звук в игре - достаточно нажать";
+                    if (msg.Contains('m'))
+                    {
+                        if (msg.Contains('0'))
+                            answer = "Это образовательное приложение было разработано с целью изучения английского языка.";
+                        else if (msg.Contains('1'))
+                            answer = "Приложение расчитано на детей от 3 до 7 лет";
+                        else if (msg.Contains('2'))
+                            answer = "Приложение имеет два раздела: 'Живое' и 'Неживое', в каждом разделе по 5 вопросов.";
+                        else if (msg.Contains('3'))
+                            answer = "Приложение имеет три режима: 'Игра на время', 'Ограниченное число ошибок' и 'Дополнительная попытка'";
+                        else if (msg.Contains('4'))
+                            answer = "Пожалуйста, выберите интересующий Вас режим";
+                        else if (msg.Contains('5'))
+                            answer = "Чтобы отключить звук в игре - достаточно нажать";
+                    }
+                    else
+                    {
+                        if (msg.Contains('0'))
+                            answer = "Время, предназначенное для выбора ответа - будет ограничено - 30 секунд. После чего ответ будет считаться неправильным, а вопрос изменится на следующий. ";
+                        else if (msg.Contains('1'))
+                            answer = "За всю игру - у вас будет право на совершение 3-х ошибок, после чего игра будет окончена.";
+                        else if (msg.Contains('2'))
+                            answer = "Для ответа на каждый вопрос вам будет дана не одна попытка, а две.";
+                    }
 
-                //// преобразовываем в массив байт
-                var byteMsg = Encoding.UTF8.GetBytes(answer);
+                    //// преобразовываем в массив байт
+                    var byteMsg = Encoding.UTF8.GetBytes(answer);
 
-                //// передаем это сообщение с помощью метода 'WriteAsync'
-                await stream.WriteAsync(byteMsg);
+                    //// передаем это сообщение с помощью метода 'WriteAsync'
+                    await stream.WriteAsync(byteMsg);
+
+                } while (true);
             }
             catch (Exception e)
             {

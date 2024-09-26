@@ -55,7 +55,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Image Grid.RowSpan="11" x:Name="my_image" Source="lion.jpg" Stretch="Fill" Margin="1,0,1,-0.455" Grid.ColumnSpan="2"/>
+        <Image Grid.RowSpan="11" x:Name="my_image" Source="lion.jpg" Stretch="Uniform" Margin="1,0,1,-0.455" Grid.ColumnSpan="2"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal">
             <TextBlock Width="25"/>
             <TextBlock Style="{StaticResource Child_style}" x:Name="now" Width="15"/>
@@ -78,8 +78,8 @@
             <TextBlock Style="{StaticResource Parent_style}" x:Name="txt_timer2" Visibility="Hidden" Width="103"/>
         </StackPanel>
         <Button Grid.Column="2" Grid.Row="9" Click="Button_Click_1" Margin="11,23,85,0" Background="Green" Grid.RowSpan="2" Height="40" VerticalAlignment="Top" RenderTransformOrigin="0.51,1.684">Закончить игру</Button>
-        <Image x:Name="it_image" Stretch="Fill" gif:ImageBehavior.AnimatedSource="clock.gif" Grid.Column="2" Visibility="Hidden" Margin="118,10,10,23"  Grid.Row="8" Grid.RowSpan="3" />
-        <Image x:Name="it_image2" Stretch="Fill" gif:ImageBehavior.AnimatedSource="vopros2.gif" Grid.Column="2" Visibility="Hidden" Margin="118,10,10,6"  Grid.Row="8" Grid.RowSpan="3" />
+        <Image x:Name="it_image" Stretch="Fill" gif:ImageBehavior.AnimatedSource="/clock.gif" Grid.Column="2" Visibility="Hidden" Margin="118,10,10,23"  Grid.Row="8" Grid.RowSpan="3" Source="/clock.gif" />
+        <Image x:Name="it_image2" Stretch="Fill" gif:ImageBehavior.AnimatedSource="/Vopros2.gif" Grid.Column="2" Visibility="Hidden" Margin="118,10,10,6"  Grid.Row="8" Grid.RowSpan="3" Source="/Vopros2.gif" />
         <Button x:Name="btn_sound" Grid.Column="2" Grid.Row="8" Click="btn_sound_Click" Margin="11,12,85,24" Background="Yellow" Content="Выключить звук" Grid.RowSpan="2" />
     </Grid>
 </Window>

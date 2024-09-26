@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -27,12 +28,15 @@ namespace English_for_kids
         IPEndPoint ipep;
         Server server;
         delegate void add_del(Object obj);
+        delegate void con_del();
+        ComboBox my_combo;
+        string control_str = "m"; // основной вопрос
 
         public Info()
         {
             InitializeComponent();
 
-            CreateServer();  
+            CreateServer();
         }
 
         public void Add_text(Object obj)
@@ -62,7 +66,7 @@ namespace English_for_kids
             var buffer = new byte[1024];
 
             // преобразовываем в массив байт
-            var byteMsg = Encoding.UTF8.GetBytes(combo_questions.SelectedIndex.ToString());
+            var byteMsg = Encoding.UTF8.GetBytes(combo_questions.SelectedIndex.ToString()+control_str);
 
             // передаем это сообщение с помощью метода 'WriteAsync'
             await stream.WriteAsync(byteMsg);
@@ -77,6 +81,10 @@ namespace English_for_kids
 
             txt_answer.Text = msg;
             txt_answer.TextWrapping = TextWrapping.Wrap;
+            txt_answer.Width = 500;
+            txt_answer.FontSize = 14;
+            txt_answer.FontStyle = FontStyles.Italic;
+            txt_answer.FontFamily = new FontFamily("Times New Roman");
 
             Dispatcher.BeginInvoke(new add_del(Add_text), txt_answer);
 
@@ -88,12 +96,71 @@ namespace English_for_kids
                 combo.Items.Add("Ограниченное число ошибок");
                 combo.Items.Add("Дополнительная попытка");
 
+                my_combo = combo;
+
                 Dispatcher.BeginInvoke(new add_del(Add_text), combo);
+
+                my_combo.SelectionChanged += ComboBox_SelectedChanged;
             }
+        }
+
+        private async void ConnectToServer_Add()
+        {
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16);
+
+            using TcpClient client = new();
+
+            // подсоединяемся к серверу
+            await client.ConnectAsync(ipEndPoint);
+
+            // создаем наш поток - получая от клиента поток
+            await using NetworkStream stream = client.GetStream();
+
+            // далее будем считывать сообщения от сервера
+            // создаем буфер
+            var buffer = new byte[1024];
+
+            control_str = "a"; // add - доп режим
+
+            // преобразовываем в массив байт
+            var byteMsg = Encoding.UTF8.GetBytes(my_combo.SelectedIndex.ToString()+control_str);
+
+            // передаем это сообщение с помощью метода 'WriteAsync'
+            await stream.WriteAsync(byteMsg);
+
+            //// вернется размер того, что считали
+            int recLength = await stream.ReadAsync(buffer);
+
+            //// расшифровываем сообщение
+            var msg = Encoding.UTF8.GetString(buffer, 0, recLength);
+
+            TextBlock txt_answer = new TextBlock();
+
+            txt_answer.Text = msg;
+            txt_answer.TextWrapping = TextWrapping.Wrap;
+            txt_answer.Width = 500;
+            txt_answer.FontSize = 14;
+            txt_answer.FontStyle = FontStyles.Italic;
+            txt_answer.FontFamily = new FontFamily("Times New Roman");
+
+            Dispatcher.BeginInvoke(new add_del(Add_text), txt_answer);
+
+            control_str = "m"; // main - главная
+        }
+
+        private void ComboBox_SelectedChanged(object sender, SelectionChangedEventArgs e)
+        {
+            for (int i = 0; i < answer_panel.Children.Count; i++)
+            {
+                if (answer_panel.Children[i].GetType() == typeof(TextBlock))
+                    answer_panel.Children.Remove(answer_panel.Children[i]);
+            }
+            ConnectToServer_Add();
         }
 
         private void combo_questions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            answer_panel.Children.Clear();
             ConnectToServer();
         }
     }

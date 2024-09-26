@@ -18,28 +18,28 @@
                 </LinearGradientBrush>
             </WrapPanel.Resources>
             <Menu Height="25" VerticalAlignment="Top" HorizontalAlignment="Center">
-                <MenuItem Header="Игра">
+                <MenuItem Header="Игра" Click="MenuItem_Click">
                     <MenuItem Name="new_player" Click="new_player_Click" Header="Новый игрок"></MenuItem>
                     <MenuItem Name="ex_player" Click="ex_player_Click" Header="Существующий игрок"></MenuItem>
                     <Separator/>
                     <MenuItem Name="exit_player" Click="exit_player_Click" Header="Выход"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Другое">
+                <MenuItem Header="Другое" Click="MenuItem_Click_1">
                     <MenuItem Name="rating" Click="rating_Click" Header="Рейтинг"></MenuItem>
                     <MenuItem Name="info" Click="info_Click" Header="Твой помощник"></MenuItem>
                 </MenuItem>
             </Menu>
             <StackPanel Orientation="Horizontal" Width="791">
-                <Image Width="544" Source="play.jpg" Height="449"/>
+                <Image Width="544" Source="/play.jpg" Height="449"/>
                 <StackPanel x:Name="st_panel_auto" Orientation="Vertical" VerticalAlignment="Center" Visibility="Hidden" HorizontalAlignment="Left" Width="205" >
                     <TextBlock x:Name="new_or_exist" Background="Yellow" FontStyle="Italic" Margin="-7,0,-6,0"></TextBlock>
-                    <TextBlock Height="21" Text="Введите имя:"></TextBlock>
+                    <TextBlock Margin="5" Height="21" Text="Введите никнейм:"></TextBlock>
                     <TextBox x:Name="txt_name" Height="39" Margin="0,0,-1,0" PreviewKeyDown="txt_name_PreviewKeyDown" PreviewTextInput="txt_name_PreviewTextInput"/>
-                    <TextBlock Height="21" Text="Введите фамилию:">></TextBlock>
-                    <TextBox x:Name="txt_lastname" Height="39" Margin="0,0,-1,0" PreviewTextInput="txt_lastname_PreviewTextInput" PreviewKeyDown="txt_lastname_PreviewKeyDown"/>
-                    <TextBlock x:Name="enter_age" Height="22"><Run Text="Введите возраст:"/></TextBlock>
+                    <TextBlock Margin="5" Height="21" Text="Введите пароль:"></TextBlock>
+                    <TextBox x:Name="txt_password" Height="39" Margin="0,0,-1,0" PreviewKeyDown="txt_password_PreviewKeyDown" PreviewTextInput="txt_password_PreviewTextInput"/>
+                    <TextBlock x:Name="enter_age" Height="22" Text="Введите возраст:"></TextBlock>
                     <TextBox x:Name="txt_age" Height="38" PreviewTextInput="txt_age_PreviewTextInput" PreviewKeyDown="txt_age_PreviewKeyDown"/>
-                    <Button Background="{DynamicResource GBB}" Foreground="Blue" Click="Button_Click" Margin="53,0,38,0" Height="48" FontStyle="Italic" BorderThickness="2" FontFamily="Swis721 Hv BT" FontSize="16" Content="Готово"/>
+                    <Button Margin="10" Background="{DynamicResource GBB}" Foreground="Blue" Click="Button_Click" Height="48" FontStyle="Italic" BorderThickness="2" FontFamily="Swis721 Hv BT" FontSize="16" Content="Готово"/>
                 </StackPanel>
                 <StackPanel>
                 </StackPanel>

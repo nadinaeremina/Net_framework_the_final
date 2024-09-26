@@ -23,18 +23,9 @@ namespace English_for_kids
         {
             InitializeComponent();
 
-            try
-            {
-                players.Sort();
-                players.Reverse();
-                if (players.Count == 0)
-                    throw new Exception("Список игроков еще пуст!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-           
+            players.Sort();
+            players.Reverse();
+
             for (int i = 0; i < players.Count; i++)
                 players[i].Number = i + 1;
 

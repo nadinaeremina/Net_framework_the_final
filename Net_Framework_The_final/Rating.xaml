@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:English_for_kids"
         mc:Ignorable="d"
-        Title="Рейтинг" Height="180" Width="385" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Рейтинг" Height="180" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
     <Grid Margin="0,0,-1,0">
         <DataGrid x:Name="dg_pl" AutoGenerateColumns="False" RowBackground="LightGreen" AlternatingRowBackground="Yellow">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Место" Binding="{Binding Path=Number}" Width="50"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding Path=First_name}" Width="100"/>
-                <DataGridTextColumn Header="Фамилия" Binding="{Binding Path=Last_name}" Width="100"/>
+                <DataGridTextColumn Header="Никнейм" Binding="{Binding Path=Nickname}" Width="100"/>
                 <DataGridTextColumn Header="Возраст" Binding="{Binding Path=Age}" Width="60"/>
                 <DataGridTextColumn Header="Очки" Binding="{Binding Path=Rating}" Width="50"/>
             </DataGrid.Columns>

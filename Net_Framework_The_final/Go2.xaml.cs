@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 
 namespace English_for_kids
 {
@@ -24,9 +25,15 @@ namespace English_for_kids
     /// </summary>
     public partial class Go2 : Window
     {
-        string first_name, last_name, my_str, new_str = "";
+        // передаем в конструктор 'XmlSerializer' тип класса ''Player''
+        XmlSerializer xmlser = new XmlSerializer(typeof(List<Player>));
+        List<Player> players = new List<Player>();
+        Player player;
+
+        string str_name, str_pass, my_str, new_str = "";
         string[] right_answers = { "key", "cake", "car", "sun", "house" };
-        int ind1 = 0, ind2 = 1, ind3 = 2, right = 0, wrong = 0, inner_wrong = 1, limit_wrong = 5, left = 1, ind_right = 0, count = 60, age;
+        int ind1 = 0, ind2 = 1, ind3 = 2, right = 0, wrong = 0, inner_wrong = 1, limit_wrong = 5, left = 1, ind_right = 0, count = 60, int_age;
+
         bool sound = false;
 
         private void btn_sound_Click(object sender, RoutedEventArgs e)
@@ -50,13 +57,13 @@ namespace English_for_kids
         DispatcherTimer dt = new DispatcherTimer();
         MediaPlayer media_pl = new MediaPlayer();
 
-        public Go2(bool check, bool check2, bool check3, string str1, string str2, int agee, bool exist)
+        public Go2(bool check, bool check2, bool check3, string name, string password, int age, bool exist)
         {
             string path = "C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\audio4.mp3";
 
             try
             {
-                media_pl.Open(new Uri("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\audio4.mp3"));
+                media_pl.Open(new Uri(path));
                 if (path == " ")
                     throw new Exception("Отсутствует аудиофайл!");
                 media_pl.Play();
@@ -64,11 +71,11 @@ namespace English_for_kids
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            } 
+            }
 
-            first_name = str1;
-            last_name = str2;
-            age = agee;
+            str_name = name;
+            int_age = age;
+            str_pass = password;
             existing = exist;
 
             words.Add("pen");
@@ -173,81 +180,69 @@ namespace English_for_kids
                 }
 
                 if (left == 1)
-                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\Desktop\\Новая папка2\\cake.jpg");
+                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\cake.jpg");
                 else if (left == 2)
-                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\Desktop\\Новая папка2\\car.jpg");
+                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\car.jpg");
                 else if (left == 3)
-                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\Desktop\\Новая папка2\\sun.jpg");
+                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\sun.jpg");
                 else if (left == 4)
-                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\Desktop\\Новая папка2\\house.jpg");
+                    my_image2.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\house.jpg");
                 else if (left == 5)
                 {
                     media_pl.Stop();
                     System.Windows.MessageBox.Show($"Игра закончилась! Вы набрали {right} очков");
+                    dt.Stop();
+
+                    player = new Player { Nickname = str_name, Age = int_age, Rating = right, Password = str_pass };
+
 
                     if (!existing)
                     {
-                        StreamWriter writer = new StreamWriter(@"C:\\Users\\Nadya\\Desktop\\Players.txt", true);
-                        writer.Write(first_name);
-                        writer.Write(" ");
-                        writer.Write(last_name);
-                        writer.Write(" ");
-                        writer.Write(age);
-                        writer.Write(" ");
-                        writer.Write(right);
-                        writer.Write("/");
-                        writer.Close();
+                        try
+                        {
+                            // десериализуем объект
+                            using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
+                            {
+                                players = (List<Player>)xmlser.Deserialize(fs);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                        finally
+                        {
+                            players.Add(player);
+
+                            // получаем поток, куда будем записывать сериализованный объект
+                            using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
+                            {
+                                xmlser.Serialize(fs, players); // принимает поток и обьект
+                            }
+                        }
                     }
                     else
                     {
-                        List<string> list;
-                        List<string> my_list;
-                        using (StreamReader reader = new StreamReader(@"C:\\Users\\Nadya\\Desktop\\Players.txt", true))
+                        // десериализуем объект
+                        using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
                         {
-                            string str = reader.ReadToEnd();
-                            string[] mas = str.Split('/');
-                            list = new List<string>(mas);
-                            list.RemoveAt(list.Count - 1);
+                            players = (List<Player>)xmlser.Deserialize(fs);
 
-                            for (int i = 0; i < list.Count; i++)
+                            foreach (Player pl in players)
                             {
-                                if (list[i].Contains(first_name) && list[i].Contains(last_name))
-                                {
-                                    my_str = list[i];
-                                    list.RemoveAt(i);
-                                    break;
-                                }
+                                if (pl.Nickname == player.Nickname)
+                                    pl.Rating += right;
                             }
-
-                            string[] mas2 = my_str.Split(' ');
-                            my_list = new List<string>(mas2);
-                            my_list[3] = (Convert.ToInt32(my_list[3]) + right).ToString();
-                            my_str = "";
-
-                            for (int i = 0; i < my_list.Count; i++)
-                            {
-                                my_str += my_list[i];
-                                if (i < my_list.Count - 1)
-                                    my_str += ' ';
-                            }
-                            my_str += "/";
-
-                            for (int i = 0; i < list.Count; i++)
-                                list[i] += '/';
-
-                            list.Add(my_str);
-                            //reader.Close();
                         }
 
-                        using (StreamWriter writer = new StreamWriter(@"C:\\Users\\Nadya\\Desktop\\Players.txt"))
+                        // получаем поток, куда будем записывать сериализованный объект
+                        using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
                         {
-                            for (int i = 0; i < list.Count; i++)
-                                new_str += list[i];
-                            writer.Write(new_str);
-                            //writer.Close();
-                        }    
+                            xmlser.Serialize(fs, players);
+                        }
                     }
 
+                    media_pl.Stop();
                     Settings set = new Settings();
                     set.Show();
                     Close();

@@ -10,18 +10,15 @@ namespace English_for_kids
     [Serializable]
     public class Player:IComparable
     {
-        public Player()
-        {
-        }
-
-        public string First_name { get; set; }
-        public string Last_name { get; set; }
+        public string Nickname { get; set; }
+        public string Password { get; set; }
         public int Age { get; set; }
-        public string Rating { get; set; }
+        public int Rating { get; set; }
         public int Number { get; set; }
+        public Player()  { }
         public override string ToString()
         {
-            return $" {Number}) {First_name} {Last_name} {Age} лет {Rating} очков";
+            return $" {Number}) {Nickname} {Age} лет {Rating} очков";
         }
         public int CompareTo(object obj) 
         {

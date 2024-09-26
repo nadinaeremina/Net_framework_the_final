@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Serialization;
@@ -23,79 +25,133 @@ namespace English_for_kids
     /// </summary>
     public partial class Settings : Window
     {
+        // передаем в конструктор 'XmlSerializer' тип класса ''Player''
+        XmlSerializer xmlser = new XmlSerializer(typeof(List<Player>));
         MediaPlayer media_pl = new MediaPlayer();
-        bool exicting = false;
+        List<Player> players = new List<Player>();
+        Player player;
+
+        bool exicting = false, playing = false;
+
         public Settings()
         {
             string path = "C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\audio2.mp3";
             try
             {
                 media_pl.Open(new Uri(path));
+
                 if (path == " ")
                     throw new Exception("Отсутствует аудиофайл!");
+
                 media_pl.Play();
+                playing = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            
+
             InitializeComponent();
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!playing)
+                playing = true;
+
             int chislo, age = 0;
             if (txt_name.Text.Length > 0)
             {
-                if (txt_lastname.Text.Length > 0)
+                if (txt_password.Text.Length > 0)
                 {
                     if ((txt_age.Text.Length > 0 && !exicting) || exicting)
                     {
-                        if ((!exicting && int.TryParse(txt_age.Text, out chislo) == true && Convert.ToInt32(txt_age.Text) >= 3 && Convert.ToInt32(txt_age.Text) < 8) || exicting)
+                        if (!exicting && int.TryParse(txt_age.Text, out chislo) == true || exicting)
                         {
-                            if (!exicting)
+                            try
                             {
-                                MessageBox.Show("Данные сохранены!");
-                                media_pl.Stop();
-                                Welcome f2 = new Welcome(txt_name.Text, txt_lastname.Text, Convert.ToInt32(txt_age.Text), exicting);
-                                f2.Show();
-                                Close();
-                            }
-                            else
-                            {
-                                bool flag = false;
-                                StreamReader reader = new StreamReader(@"C:\\Users\\Nadya\\Desktop\\Players.txt", true);
-                                string str = reader.ReadToEnd();
-                                string[] mas = str.Split('/');
-                                List<string> list = new List<string>();
-                                list.AddRange(mas);
-                                list.RemoveAt(list.Count - 1);
-
-                                for (int i = 0; i < list.Count; i++)
+                                // десериализуем объект
+                                using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
                                 {
-                                    if (list[i].Contains(txt_name.Text) && list[i].Contains(txt_lastname.Text))
+                                    players = (List<Player>)xmlser.Deserialize(fs);
+                                }
+
+                                bool flag_name = false, flag_password = false; 
+
+                                if (!exicting)
+                                {
+                                    foreach (Player pl in players)
                                     {
-                                        flag = !flag;
-                                        string[] mas2 = list[i].Split(' ');
-                                        age = Convert.ToInt32(mas2[2]);
-                                        break;
+                                        if (pl.Nickname == txt_name.Text)
+                                        {
+                                            MessageBox.Show("Такой никнейм уже занят!\nПридумайте новый!");
+                                            txt_password.Clear();
+                                            txt_name.Clear();
+                                            txt_age.Clear();
+                                            flag_name = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!flag_name)
+                                    {
+                                        MessageBox.Show("Данные сохранены!");
+                                        media_pl.Stop();
+                                        Welcome f2 = new Welcome(txt_name.Text, txt_password.Text, Convert.ToInt32(txt_age.Text), exicting);
+                                        f2.Show();
+                                        Close();
                                     }
                                 }
-                                reader.Close();
-                                if (flag)
+                                else
                                 {
-                                    MessageBox.Show("Такой игрок существует!");
+                                    foreach (Player pl in players)
+                                    {
+                                        if (pl.Nickname == txt_name.Text)
+                                        {
+                                            flag_name = true;
+                                            if (pl.Password == txt_password.Text)
+                                            {
+                                                MessageBox.Show("Пароль верный!");
+                                                flag_password = true;
+                                                break;
+                                            } 
+                                        }
+                                    }
+                                        
+                                    if (flag_name)
+                                    {
+                                        if (!flag_password)
+                                        {
+                                            MessageBox.Show("Пароль не верный!");
+                                            txt_password.Clear();
+                                        }
+                                        else
+                                        {
+                                            media_pl.Stop();
+                                            Welcome f2 = new Welcome(txt_name.Text, txt_password.Text, age, exicting);
+                                            f2.Show();
+                                            Close();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Такого игрока не существует!");
+                                        txt_password.Clear();
+                                        txt_name.Clear();
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                if (!exicting)
+                                {
+                                    MessageBox.Show("Данные сохранены!");
                                     media_pl.Stop();
-                                    Welcome f2 = new Welcome(txt_name.Text, txt_lastname.Text, age, exicting);
+                                    Welcome f2 = new Welcome(txt_name.Text, txt_password.Text, Convert.ToInt32(txt_age.Text), exicting);
                                     f2.Show();
                                     Close();
                                 }
                                 else
-                                {
-                                    MessageBox.Show("Такого игрока не существует!");
-                                    txt_lastname.Clear();
-                                    txt_name.Clear();
-                                }   
+                                    MessageBox.Show("Нет ни одного зарегистрированного игрока!\nПожалуйста, зарегистрируйтесь!");
                             }
                         }
                         else
@@ -108,7 +164,8 @@ namespace English_for_kids
                         MessageBox.Show("Введите возраст!");
                 }
                 else
-                    MessageBox.Show("Введите фамилию!");
+                    MessageBox.Show("Введите пароль!");
+
             }
             else
                 MessageBox.Show("Введите имя!");
@@ -124,7 +181,21 @@ namespace English_for_kids
         }
         private void ex_player_Click(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists("C:\\Users\\Nadya\\Desktop\\Players.txt"))
+            try
+            {
+                // десериализуем объект
+                using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
+                {
+                    players = (List<Player>)xmlser.Deserialize(fs);
+                }
+
+                new_or_exist.Text = "Авторизация существующего игрока:";
+                exicting = true;
+                st_panel_auto.Visibility = Visibility.Visible;
+                enter_age.Visibility = Visibility.Hidden;
+                txt_age.Visibility = Visibility.Hidden;
+            }
+            catch (Exception)
             {
                 MessageBox.Show("Нет ни одного зарегистрированного игрока! Пожалуйста, зарегистрируйтесь!");
                 new_or_exist.Text = "Регистрация нового игрока";
@@ -133,39 +204,37 @@ namespace English_for_kids
                 enter_age.Visibility = Visibility.Visible;
                 txt_age.Visibility = Visibility.Visible;
             }
-            else
-            {
-                new_or_exist.Text = "Авторизация существующего игрока:";
-                exicting = true;
-                st_panel_auto.Visibility = Visibility.Visible;
-                enter_age.Visibility = Visibility.Hidden;
-                txt_age.Visibility = Visibility.Hidden;
-            }
         }
         private void rating_Click(object sender, RoutedEventArgs e)
         {
-            using (StreamReader reader = new StreamReader(@"C:\\Users\\Nadya\\Desktop\\Players.txt", true))
+            media_pl.Stop();
+            playing = false;
+
+            try
             {
-                string str = reader.ReadToEnd();
-                reader.Close();
-                List<Player> players = new List<Player>();
-                string[] mas = str.Split('/');
-                string[] my_str;
-                for (int i = 0; i < mas.Length; i++)
+                // десериализуем объект
+                using (FileStream fs = new FileStream("Players.txt", FileMode.OpenOrCreate))
                 {
-                    my_str = mas[i].Split(' ');
-                    if (my_str.Length == 4)
-                        players.Add(new Player { First_name = my_str[0], Last_name = my_str[1], Age = Convert.ToInt32(my_str[2]), Rating = my_str[3] });
+                    players = (List<Player>)xmlser.Deserialize(fs);
                 }
+
                 Rating rating_form = new Rating(players);
                 rating_form.ShowDialog();
-            }  
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Рейтинг игроков пока пуст!!");
+            }
         }
+
         private void info_Click(object sender, RoutedEventArgs e)
         {
+            media_pl.Stop();
+            playing = false;
             Info info_form = new Info();
             info_form.ShowDialog();
         }
+
         private void exit_player_Click(object sender, RoutedEventArgs e)
         {
             media_pl.Stop();
@@ -207,6 +276,36 @@ namespace English_for_kids
         {
             if (e.Key == Key.Space)
                 e.Handled = true; // тогда не обрабатывать введенный символ(и, следовательно, не выводить его в TextBox)
+        }
+
+        private void txt_password_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                e.Handled = true; // тогда не обрабатывать введенный символ(и, следовательно, не выводить его в TextBox)
+        }
+
+        private void txt_password_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if ((!char.IsDigit(e.Text, 0) && !char.IsLetter(e.Text, 0)))
+                e.Handled = true; // тогда не обрабатывать введенный символ(и, следовательно, не выводить его в TextBox)
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!playing)
+            {
+                media_pl.Play();
+                playing = true;
+            }
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (!playing)
+            {
+                media_pl.Play();
+                playing = true;
+            }
         }
     }
 }

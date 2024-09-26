@@ -75,16 +75,15 @@ namespace English_for_kids
 
         private void btn_start_Click(object sender, RoutedEventArgs e)
         {
-            media_pl.Stop();
+            //media_pl.Stop();
             Settings f1 = new Settings();
             f1.Show();
             Close();
         }
 
-        private void btn_exit_Click(object sender, RoutedEventArgs e)
+        private void main_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             media_pl.Stop();
-            Close();
         }
     }
 }

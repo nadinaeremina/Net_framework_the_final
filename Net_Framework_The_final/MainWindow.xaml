@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:English_for_kids"
         mc:Ignorable="d"
-        Title="Главная" Height="500" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Главная" Height="500" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Closing="main_Closing">
     <Grid >
         <WrapPanel Margin="77,0,52,0">
-            <Image Height="381" Source="English.jpg" Stretch="Fill" Width="675"></Image>
+            <Image Height="381" Source="/English.jpg" Stretch="Fill" Width="630"></Image>
             <TextBlock Margin="5" Width="76" FontSize="14" Foreground="Blue" FontStyle="Italic" FontFamily="Sitka Small">Загрузка...</TextBlock>
             <Grid Width="487">
-                <ProgressBar Name="p_bar" Margin="0,0,0,7" />
-                <TextBlock Text="{Binding ElementName=p_bar, Path=Value, StringFormat={}{0:0}% }" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,1,0" Height="15" FontStyle="Italic" FontFamily="Sitka Small" />
+                <ProgressBar Name="p_bar" Margin="0,3,0,7" />
+                <TextBlock Text="{Binding ElementName=p_bar, Path=Value, StringFormat={}{0:0}% }" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,1,0" Height="20" FontStyle="Italic" FontFamily="Sitka Small" />
             </Grid>
             <Button Margin="5" Name="btn_start" Click="btn_start_Click" Width="65" Height="20" Background="{x:Null}" Foreground="Blue" FontSize="14" FontFamily="Sitka Small" BorderThickness="0" FontStyle="Italic">Начать</Button>
         </WrapPanel>

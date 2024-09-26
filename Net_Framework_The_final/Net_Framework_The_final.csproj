@@ -9,11 +9,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="1119a229674891fb8562b2fc073876d3.jpg" />
+    <None Remove="clock.gif" />
+    <None Remove="English.jpg" />
+    <None Remove="ki.jpg" />
+    <None Remove="lion.jpg" />
+    <None Remove="play.jpg" />
     <None Remove="veayqxh0.ocs~" />
+    <None Remove="Vopros2.gif" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="1119a229674891fb8562b2fc073876d3.jpg" />
+    <Resource Include="clock.gif" />
+    <Resource Include="English.jpg" />
+    <Resource Include="ki.jpg" />
+    <Resource Include="lion.jpg" />
+    <Resource Include="play.jpg" />
+    <Resource Include="Vopros2.gif" />
   </ItemGroup>
 
 </Project>

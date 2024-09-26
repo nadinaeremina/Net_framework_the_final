@@ -5,19 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:English_for_kids"
         mc:Ignorable="d"
-        Title="Твой помощник" Height="250" Width="400" WindowStartupLocation="CenterScreen">
-    <StackPanel>
-        <TextBlock Margin="10" HorizontalAlignment="Center">Добро пожаловать!</TextBlock>
-        <TextBlock Margin="10" HorizontalAlignment="Center">Пожалуйста, выберите интересующий вас вопрос:</TextBlock>
-        <ComboBox Margin="5" x:Name="combo_questions" SelectionChanged="combo_questions_SelectionChanged" Width="297">
-            <ComboBoxItem Content="Цель игры"/>
-            <ComboBoxItem Content="Рекомендуемый возраст игрока"/>
-            <ComboBoxItem Content="Сколько всего вопросов в одной игре"/>
-            <ComboBoxItem Content="Какие есть режимы у игры"/>
-            <ComboBoxItem Content="В чем особенность каждого режиа игры"/>
-            <ComboBoxItem Content="Как включить/отключить звук у игры"/>
-        </ComboBox>
-        <TextBlock>Твой помощник:</TextBlock>
-        <StackPanel x:Name="answer_panel"></StackPanel>
+        Title="Твой помощник" Height="250" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <StackPanel Orientation="Horizontal">
+        <Image Height="113" Width="91" Source="/1119a229674891fb8562b2fc073876d3.jpg"/>
+        <StackPanel Width="509">
+            <TextBlock Margin="5" HorizontalAlignment="Center"><Run Text="Добро пожаловать!"/></TextBlock>
+            <TextBlock Margin="5" HorizontalAlignment="Center"><Run Text="Пожалуйста, выберите интересующий вас вопрос:"/></TextBlock>
+            <ComboBox Margin="5" x:Name="combo_questions" SelectionChanged="combo_questions_SelectionChanged" Width="297">
+                <ComboBoxItem Content="Цель игры"/>
+                <ComboBoxItem Content="Рекомендуемый возраст игрока"/>
+                <ComboBoxItem Content="Сколько всего вопросов в одной игре"/>
+                <ComboBoxItem Content="Какие есть режимы у игры"/>
+                <ComboBoxItem Content="В чем особенность каждого режиа игры"/>
+                <ComboBoxItem Content="Как включить/отключить звук у игры"/>
+            </ComboBox>
+            <TextBlock Foreground="Green" FontSize="18" FontStyle="Italic" FontFamily="Times New Roman"><Run Text="Твой помощник:"/></TextBlock>
+            <StackPanel x:Name="answer_panel"/>
+        </StackPanel>
     </StackPanel>
 </Window>
