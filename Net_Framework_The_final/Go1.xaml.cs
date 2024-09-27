@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using System.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace English_for_kids
 {
@@ -29,6 +33,17 @@ namespace English_for_kids
         XmlSerializer xmlser = new XmlSerializer(typeof(List<Player>));
         List<Player> players = new List<Player>();
         Player player;
+
+        SqlConnection conn = null;
+        SqlCommand cmd = new SqlCommand();
+        DataSet ds_s = new DataSet();
+        DataTable dt_events = new DataTable();
+        SqlDataAdapter events_adapter = new SqlDataAdapter();
+        SqlCommandBuilder cmd_events = new SqlCommandBuilder();
+        string cs = "";
+
+        List<string> questions_simple = new List<string>();
+        List<string> questions_difficult = new List<string>();
 
         string str_name, str_pass, my_str, new_str = "";
         string[] right_answers = { "lion", "dog", "cat", "bird", "fish" };
@@ -103,6 +118,47 @@ namespace English_for_kids
             answer.Items.Add(words[ind1]);
             answer.Items.Add(words[ind2]);
             answer.Items.Add(words[ind3]);
+
+            string connectionstring = ConfigurationManager.ConnectionStrings["English"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connectionstring))
+            {
+                conn.Open();
+
+                string proc1 = "dbo.alive_simple"; // выбираем хранимую процедуру
+                SqlCommand cmd = new SqlCommand(proc1, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr.Read())
+                {
+                    var f0 = dr[0];
+
+                    questions_simple.Add((string)f0);
+                }
+
+                dr.Close(); // желательно закрывать
+
+                string proc2 = "dbo.alive_difficult"; // выбираем хранимую процедуру
+                SqlCommand cmd2 = new SqlCommand(proc2, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd2.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader dr2 = cmd2.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr2.Read())
+                {
+                    var f0 = dr2[0];
+
+                    questions_difficult.Add((string)f0);
+                }
+
+                dr2.Close(); // желательно закрывать
+            }
+
+            txt_choose_answer.Text = questions_simple[0];
 
             now.Text = left.ToString();
             txt_right.Text = "0";
@@ -181,11 +237,11 @@ namespace English_for_kids
                 }
 
                 if (left == 1)
-                    my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\dog.jpg");
+                    my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\lion.jpg");
                 else if (left == 2)
-                    my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\cat.jpg");
-                else if (left == 3)
                     my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\bird.jpg");
+                else if (left == 3)
+                    my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\dog.jpg");
                 else if (left == 4)
                     my_image.Source = (ImageSource)new ImageSourceConverter().ConvertFromString("C:\\Users\\Nadya\\source\\repos\\Net_Framework_The_final\\Net_Framework_The_final\\fish.jpg");
                 else if (left == 5)
