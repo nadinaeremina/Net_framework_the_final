@@ -60,7 +60,7 @@
             <TextBlock Style="{StaticResource Child_style}" x:Name="now" Width="15"/>
             <TextBlock Style="{StaticResource Child_style}" Text=" вопрос из 5"/>
         </StackPanel>
-        <TextBlock Style="{StaticResource Parent_style}" Grid.Row="1" Grid.Column="2" Margin="7,0,0,32" Grid.RowSpan="2">Выберите правильный ответ:</TextBlock>
+        <TextBlock TextWrapping="Wrap" x:Name="txt_choose_answer" Style="{StaticResource Parent_style}" Grid.Row="1" Grid.Column="2" Margin="7,0,0,32" Grid.RowSpan="2"></TextBlock>
         <ListBox Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" x:Name="answer" Margin="12,27,10,11">
         </ListBox>
         <Button Background="{StaticResource GBB}" Grid.Column="2" Grid.Row="4" Click="Button_Click"  Grid.RowSpan="2" Margin="0,0,30,14" HorizontalAlignment="Right" Width="138">Выбрать</Button>

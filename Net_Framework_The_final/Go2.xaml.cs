@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Serialization;
+using System.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace English_for_kids
 {
@@ -30,11 +34,17 @@ namespace English_for_kids
         List<Player> players = new List<Player>();
         Player player;
 
-        string str_name, str_pass, my_str, new_str = "";
-        string[] right_answers = { "key", "cake", "car", "sun", "house" };
-        int ind1 = 0, ind2 = 1, ind3 = 2, right = 0, wrong = 0, inner_wrong = 1, limit_wrong = 5, left = 1, ind_right = 0, count = 60, int_age;
+        SqlConnection conn = null;
+        SqlCommand cmd = new SqlCommand();
+        SqlDataReader dr;
 
-        bool sound = false;
+        List<string> questions = new List<string>();
+        List<string> answers = new List<string>();
+
+        string connectionstring = ConfigurationManager.ConnectionStrings["English"].ConnectionString;
+        string str_name, str_pass, right_answer = "", procedure;
+        int right = 0, wrong = 0, limit_wrong = 5, inner_wrong = 1, left = 1, count = 60, int_age, index_question = 0, id_question;
+        bool sound = true;
 
         private void btn_sound_Click(object sender, RoutedEventArgs e)
         {
@@ -78,31 +88,68 @@ namespace English_for_kids
             str_pass = password;
             existing = exist;
 
-            words.Add("pen");
-            words.Add("key");
-            words.Add("cup");
-
-            words.Add("cake");
-            words.Add("toothbrush");
-            words.Add("lamp");
-
-            words.Add("car");
-            words.Add("road");
-            words.Add("wind");
-
-            words.Add("rain");
-            words.Add("sky");
-            words.Add("sun");
-
-            words.Add("paper");
-            words.Add("house");
-            words.Add("bed");
-
             InitializeComponent();
 
-            answer.Items.Add(words[ind1]);
-            answer.Items.Add(words[ind2]);
-            answer.Items.Add(words[ind3]);
+            using (conn = new SqlConnection(connectionstring))
+            {
+                conn.Open();
+
+                procedure = "dbo.not_alive_simple"; // выбираем хранимую процедуру
+                cmd = new SqlCommand(procedure, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr.Read())
+                    questions.Add((string)dr[0]);
+
+                dr.Close();
+
+                procedure = "dbo.not_alive_difficult"; // выбираем хранимую процедуру
+                cmd = new SqlCommand(procedure, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr.Read())
+                    questions.Add((string)dr[0]);
+
+                dr.Close();
+
+                procedure = "dbo.know_id_question"; // выбираем хранимую процедуру
+                cmd = new SqlCommand(procedure, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@question", questions[index_question]); // нужно быть уверенным, что второй пар-р нужного типа
+
+                dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr.Read())
+                    id_question = (int)dr[0];
+
+                dr.Close();
+
+                procedure = "dbo.show_answers"; // выбираем хранимую процедуру
+                cmd = new SqlCommand(procedure, conn);
+                // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", id_question); // нужно быть уверенным, что второй пар-р нужного типа
+
+                dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                while (dr.Read())
+                    answers.Add((string)dr[0]);
+
+                dr.Close();
+            }
+
+            answer.Items.Add(answers[0]);
+            answer.Items.Add(answers[1]);
+            answer.Items.Add(answers[2]);
+
+            txt_choose_answer.Text = questions[index_question];
 
             now.Text = left.ToString();
             txt_right.Text = "0";
@@ -129,19 +176,37 @@ namespace English_for_kids
         {
             if (answer.SelectedItem != null)
             {
-                if (answer.SelectedItem.ToString() == right_answers[ind_right])
+                using (conn = new SqlConnection(connectionstring))
+                {
+                    conn.Open();
+
+                    procedure = "dbo.show_right_answer"; // выбираем хранимую процедуру
+                    cmd = new SqlCommand(procedure, conn);
+                    // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", id_question); // нужно быть уверенным, что второй пар-р нужного типа
+
+                    dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                    while (dr.Read())
+                        right_answer = (string)dr[0];
+
+                    dr.Close();
+                }
+
+                index_question++;
+
+                if (answer.SelectedItem.ToString() == right_answer)
                 {
                     System.Windows.MessageBox.Show("Правильно!");
                     flag = false;
                     txt_right.Text = (++right).ToString();
-                    ind_right++;
                 }
                 else
                 {
                     System.Windows.MessageBox.Show("Ошибка!");
                     if (inner_wrong == 1 || flag)
                     {
-                        ind_right++;
                         txt_wrong.Text = (++wrong).ToString();
                         flag = false;
                         if (wrong == limit_wrong)
@@ -160,23 +225,57 @@ namespace English_for_kids
                         System.Windows.MessageBox.Show("У вас есть еще 1 попытка!");
                     }
                 }
+
+                answers.Clear();
+
+                if (index_question < 5)
+                {
+                    using (conn = new SqlConnection(connectionstring))
+                    {
+                        conn.Open();
+
+                        procedure = "dbo.know_id_question"; // выбираем хранимую процедуру
+                        cmd = new SqlCommand(procedure, conn);
+                        // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@question", questions[index_question]); // нужно быть уверенным, что второй пар-р нужного типа
+
+                        dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                        while (dr.Read())
+                            id_question = (int)dr[0];
+
+                        dr.Close();
+
+                        procedure = "dbo.show_answers"; // выбираем хранимую процедуру
+                        cmd = new SqlCommand(procedure, conn);
+                        // определаем у нашей команды тип - 'StoredProcedure', дефолтно - текст (как раньше делали)
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id", id_question); // нужно быть уверенным, что второй пар-р нужного типа
+
+                        dr = cmd.ExecuteReader(); // достаем строку, а это не одно значение, а целый массив записей
+
+                        while (dr.Read())
+                            answers.Add((string)dr[0]);
+
+                        dr.Close();
+                    }
+                }
             }
             else
                 System.Windows.MessageBox.Show("Сначала выберите ответ!");
 
             if (inner_wrong == 1 || (inner_wrong == 2 && !flag))
             {
-                ind1 += 3;
-                ind2 += 3;
-                ind3 += 3;
-
                 if (left != 5)
                 {
+                    txt_choose_answer.Text = questions[index_question];
+
                     answer.Items.Clear();
 
-                    answer.Items.Add(words[ind1]);
-                    answer.Items.Add(words[ind2]);
-                    answer.Items.Add(words[ind3]);
+                    answer.Items.Add(answers[0]);
+                    answer.Items.Add(answers[1]);
+                    answer.Items.Add(answers[2]);
                 }
 
                 if (left == 1)
@@ -194,7 +293,6 @@ namespace English_for_kids
                     dt.Stop();
 
                     player = new Player { Nickname = str_name, Age = int_age, Rating = right, Password = str_pass };
-
 
                     if (!existing)
                     {
