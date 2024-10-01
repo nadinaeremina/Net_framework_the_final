@@ -11,7 +11,7 @@
                 <TabItem.Header>
                     <StackPanel Width="369">
                         <TextBlock Margin="3" >Живое</TextBlock>
-                        <Image Source="/English.jpg" Height="264" Width="300" Margin="0,0,7,0">
+                        <Image Source="/animals.jpg" Height="264" Width="300" Margin="0,0,7,0">
                             <Image.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Name="choose" Click="choose_Clickc" Header="Выбрать"></MenuItem>
@@ -34,7 +34,7 @@
                 <TabItem.Header>
                     <StackPanel>
                         <TextBlock Margin="3" >Неживое</TextBlock>
-                        <Image Source="/English.jpg" Stretch="Uniform" Height="261" Width="361">
+                        <Image Source="/fruits.jpg" Stretch="Uniform" Height="261" Width="361">
                             <Image.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Name="choose2" Click="choose2_Clickc" Header="Выбрать"></MenuItem>

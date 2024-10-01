@@ -10,8 +10,12 @@
 
   <ItemGroup>
     <None Remove="1119a229674891fb8562b2fc073876d3.jpg" />
+    <None Remove="animals.jpg" />
+    <None Remove="cat.jpg" />
     <None Remove="clock.gif" />
     <None Remove="English.jpg" />
+    <None Remove="fish.jpg" />
+    <None Remove="fruits.jpg" />
     <None Remove="ki.jpg" />
     <None Remove="lion.jpg" />
     <None Remove="play.jpg" />
@@ -27,8 +31,12 @@
 
   <ItemGroup>
     <Resource Include="1119a229674891fb8562b2fc073876d3.jpg" />
+    <Resource Include="animals.jpg" />
+    <Resource Include="cat.jpg" />
     <Resource Include="clock.gif" />
     <Resource Include="English.jpg" />
+    <Resource Include="fish.jpg" />
+    <Resource Include="fruits.jpg" />
     <Resource Include="ki.jpg" />
     <Resource Include="lion.jpg" />
     <Resource Include="play.jpg" />

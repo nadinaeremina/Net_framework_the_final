@@ -80,6 +80,7 @@ namespace English_for_kids
             TextBlock txt_answer = new TextBlock();
 
             txt_answer.Text = msg;
+            txt_answer.Margin = new Thickness(0, 0, 10, 0);
             txt_answer.TextWrapping = TextWrapping.Wrap;
             txt_answer.Width = 500;
             txt_answer.FontSize = 14;
@@ -91,6 +92,7 @@ namespace English_for_kids
             if (msg == "Пожалуйста, выберите интересующий Вас режим")
             {
                 ComboBox combo = new ComboBox();
+                combo.Margin = new Thickness(0, 0, 20, 0);
 
                 combo.Items.Add("Игра на время");
                 combo.Items.Add("Ограниченное число ошибок");
@@ -137,6 +139,7 @@ namespace English_for_kids
             TextBlock txt_answer = new TextBlock();
 
             txt_answer.Text = msg;
+            txt_answer.Margin = new Thickness(0, 0, 10, 0);
             txt_answer.TextWrapping = TextWrapping.Wrap;
             txt_answer.Width = 500;
             txt_answer.FontSize = 14;
